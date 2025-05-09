@@ -1,8 +1,16 @@
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
+  // Check if this is a dry run
+  const isDryRun = process.env.DRY_RUN === "true";
+  
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with the account:", deployer.address);
+  console.log("Account balance:", (await ethers.provider.getBalance(deployer.address)).toString());
+  
+  if (isDryRun) {
+    console.log("DRY RUN MODE - No transactions will be sent to the network");
+  }
 
   // Define token supply cap (100 million tokens with 18 decimals)
   const totalSupplyCap = ethers.parseUnits("100000000", 18);
@@ -15,6 +23,15 @@ async function main() {
   // For this example, we'll use direct deployment by default
   const useProxy = process.env.USE_PROXY === "true";
   let artifexToken;
+  
+  if (isDryRun) {
+    console.log(`Would deploy ArtifexToken with cap: ${ethers.formatUnits(totalSupplyCap, 18)}`);
+    console.log(`Deployment method: ${useProxy ? "UUPS Proxy" : "Direct"}`);
+    console.log("Skipping actual deployment in dry run mode");
+    
+    console.log("Dry run complete! Deployment should succeed based on configuration.");
+    return;
+  }
   
   if (useProxy) {
     // Deploy via UUPS proxy

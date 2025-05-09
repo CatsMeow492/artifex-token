@@ -1,0 +1,19 @@
+FROM trailofbits/eth-security-toolbox:latest
+
+WORKDIR /app
+COPY . /app/
+
+# Install Node.js and npm
+RUN apt-get update && apt-get install -y nodejs npm
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Install dependencies
+RUN pnpm install
+
+# Install the correct Solidity version
+RUN solc-select install 0.8.24 && solc-select use 0.8.24
+
+# Command to run Slither
+ENTRYPOINT ["slither", "--exclude-dependencies", "contracts/ArtifexToken.sol"] 

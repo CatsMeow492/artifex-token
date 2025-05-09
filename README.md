@@ -1,6 +1,6 @@
 # Artifex (ARTX) Token
 
-Artifex (ARTX) is an ERC-20 token deployed on Arbitrum One. This repository contains the smart contract implementation and testing framework.
+Artifex (ARTX) is an ERC-20 token deployed on Arbitrum One. This repository contains the smart contract implementation, testing framework, and deployment scripts.
 
 ## Features
 
@@ -49,20 +49,36 @@ cp env.txt .env
 
 ```bash
 # Run Hardhat tests
-npx hardhat test
+pnpm test
 
 # Run Foundry tests
 cd audit && forge test -vvv
+
+# Run linters
+pnpm lint
+pnpm solhint
+
+# Run Slither static analysis
+pnpm slither
 ```
 
 ### Deployment
 
 ```bash
+# Dry run deployment to Arbitrum Sepolia (testnet)
+pnpm run deploy:sepolia:dry
+
 # Deploy to Arbitrum Sepolia (testnet)
-npx hardhat run deploy/001_deploy_artifex.ts --network arbitrumSepolia
+pnpm run deploy:sepolia
+
+# Dry run deployment to Arbitrum One (mainnet)
+pnpm run deploy:mainnet:dry
 
 # Deploy to Arbitrum One (mainnet)
-npx hardhat run deploy/001_deploy_artifex.ts --network arbitrum
+pnpm run deploy:mainnet
+
+# Verify contract on Arbiscan
+pnpm run verify <CONTRACT_ADDRESS> --network arbitrum
 ```
 
 ## Security
@@ -71,12 +87,19 @@ This project aims for high security standards:
 - Comprehensive test coverage
 - Static analysis via Slither
 - Fuzz testing via Foundry
+- Solidity and TypeScript linting
 - External audit (TBD)
+
+See [AUDIT_CHECKLIST.md](docs/AUDIT_CHECKLIST.md) for security considerations.
+
+## Liquidity Provision
+
+The token will be launched with liquidity on Uniswap V3. See [LIQUIDITY_PROVISION.md](docs/LIQUIDITY_PROVISION.md) for details on the liquidity strategy.
 
 ## Token Economics
 
 - **Total Supply Cap**: 100,000,000 ARTX
-- **Initial Distribution**: TBD
+- **Initial Distribution**: 10% at launch, remainder to be allocated according to tokenomics plan
 - **Decimal Places**: 18
 
 ## License
